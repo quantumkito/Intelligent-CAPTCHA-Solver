@@ -92,3 +92,14 @@ loss, accuracy = model_evaluation(x_train, y_train, k=3, epochs=5)
 print(f'Average Loss: {loss:.4f}')
 print(f'Average Accuracy: {accuracy:.4%}\n')
 
+train_datagen.fit(x_train)
+test_datagen.fit(x_test)
+
+train_iterator = train_datagen.flow(x_train, y_train, batch_size=32)
+test_iterator = test_datagen.flow(x_test, y_test, batch_size=32)
+
+print('[Starting Model Training]')
+model.fit(train_iterator, epochs=5, validation_data=test_iterator)
+
+model.save('digit_recognition_model.h5')
+print('[Model Saved Successfully]')
