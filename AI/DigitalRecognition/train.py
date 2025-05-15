@@ -4,9 +4,9 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
-from sklearn.model_selection import KFold
-import numpy
+from sklearn.model_selection import StratifiedKFold
+from tensorflow.keras.callbacks import EarlyStopping
+import numpy as np
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
@@ -55,3 +55,35 @@ model.compile(
     optimizer=Adam(learning_rate=0.001), 
     metrics=['accuracy']
 )
+
+def model_evaluation(dataX, dataY, k, epochs):
+    print('[Model Evaluation]')
+
+    kfold = StratifiedKFold(n_splits=k, shuffle=True, random_state=1)
+    
+    fold = 0  
+    accuracies = []  
+    losses = []  
+
+    for train_ix, test_ix in kfold.split(dataX, np.argmax(dataY, axis=1)):  
+        fold += 1
+        print(f'Fold: {fold}/{k}')
+        
+        X_train, Y_train = dataX[train_ix], dataY[train_ix]
+        X_test, Y_test = dataX[test_ix], dataY[test_ix]
+
+        train_datagen.fit(X_train)
+        test_datagen.fit(X_test)
+
+        train_iterator = train_datagen.flow(X_train, Y_train, batch_size=32)
+        test_iterator = test_datagen.flow(X_test, Y_test, batch_size=32)
+
+        early_stop = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+
+        model.fit(train_iterator, epochs=epochs, validation_data=test_iterator, callbacks=[early_stop])
+
+        loss, accuracy = model.evaluate(X_test, Y_test)
+        losses.append(loss)
+        accuracies.append(accuracy)
+
+    return np.mean(losses), np.mean(accuracies)
