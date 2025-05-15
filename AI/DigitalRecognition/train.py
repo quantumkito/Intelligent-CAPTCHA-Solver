@@ -87,3 +87,8 @@ def model_evaluation(dataX, dataY, k, epochs):
         accuracies.append(accuracy)
 
     return np.mean(losses), np.mean(accuracies)
+
+loss, accuracy = model_evaluation(x_train, y_train, k=3, epochs=5)
+print(f'Average Loss: {loss:.4f}')
+print(f'Average Accuracy: {accuracy:.4%}\n')
+
