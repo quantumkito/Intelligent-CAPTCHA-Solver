@@ -1,11 +1,10 @@
 from tensorflow.keras.datasets import mnist
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D
-from tensorflow.keras.layers import MaxPooling2D
-from tensorflow.keras.layers import Flatten
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization
+from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
 from sklearn.model_selection import KFold
 import numpy
 
@@ -30,3 +29,29 @@ train_datagen = ImageDataGenerator(
 )
 
 test_datagen = ImageDataGenerator()
+
+model = Sequential([
+    Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),
+    BatchNormalization(),
+    MaxPooling2D((2, 2)),
+    Dropout(0.25),
+
+    Conv2D(64, (3, 3), activation='relu'),
+    BatchNormalization(),
+    MaxPooling2D((2, 2)),
+    Dropout(0.25),
+
+    Flatten(),
+
+    Dense(128, activation='relu'),
+    BatchNormalization(),
+    Dropout(0.5),
+    
+    Dense(10, activation='softmax')
+])
+
+model.compile(
+    loss='categorical_crossentropy',
+    optimizer=Adam(learning_rate=0.001), 
+    metrics=['accuracy']
+)
