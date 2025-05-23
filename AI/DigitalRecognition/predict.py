@@ -4,7 +4,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy
 import matplotlib.pyplot as plt
 
-model = load_model()
+model = load_model('digit_recognition_model.h5')
 
 image = load_img('example_image.png', color_mode='grayscale', target_size=(28, 28))
 image = img_to_array(image)
