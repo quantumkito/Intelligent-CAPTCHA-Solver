@@ -86,3 +86,36 @@ model.compile(
 print(model.summary())
 
 history = model.fit(it_train, epochs=20, validation_data=it_val)
+loss, accuracy = model.evaluate(np.array(X_test), y_test.to_numpy())
+print(f"Final Test Accuracy: {accuracy:.4%}")
+
+dwld = input("Do you want to save this model? (Y/N): ")
+
+if dwld.upper() == "Y":
+    model.save("my_image_rec_model.h5")
+    print("Model saved successfully as 'my_image_rec_model.h5'.")
+
+plt.plot(history.history['accuracy'], marker='o')
+plt.plot(history.history['val_accuracy'], marker='o')
+plt.title('Model Accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='lower right')
+plt.show()
+
+plt.plot(history.history['loss'], marker='o')
+plt.plot(history.history['val_loss'], marker='o')
+plt.title('Model Loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='upper right')
+plt.show()
+
+img = cv2.imread("Car2.jpg")
+img = cv2.resize(img, (128, 128)) / 255.0  
+
+pred = model.predict(np.array([img]))
+
+pred_label = image_labels[np.argmax(pred)]
+
+print(f"The model predicts that the image is a '{pred_label}'.")
