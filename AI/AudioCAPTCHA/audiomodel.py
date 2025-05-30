@@ -14,3 +14,19 @@ def load_audio(file_path):
     mfccs = mfccs[:, :max_len] if mfccs.shape[1] > max_len else np.pad(mfccs, ((0, 0), (0, max_len - mfccs.shape[1])), mode='constant')
     return mfccs
 
+label_map = {label: idx for idx, label in enumerate(sorted(os.listdir(audio_path)))}
+
+X = []
+y = []
+
+for filename in os.listdir(audio_path):
+    file_path = os.path.join(audio_path, filename)
+    mfccs = load_audio(file_path)
+    label = filename.split('_')[0]
+
+    X.append(mfccs)
+    y.append(label_map[label])
+
+X = np.array([x[:max_len] for x in X])
+X = (X - np.mean(X)) / np.std(X)
+
