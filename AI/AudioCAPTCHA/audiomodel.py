@@ -1,6 +1,7 @@
 import os
 import librosa
 import numpy as np
+from sklearn.model_selection import train_test_split
 
 audio_path = "AudioCaptchas/"
 num_classes = 10
@@ -30,3 +31,4 @@ for filename in os.listdir(audio_path):
 X = np.array([x[:max_len] for x in X])
 X = (X - np.mean(X)) / np.std(X)
 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
