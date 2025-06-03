@@ -6,7 +6,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.layers import Dropout
-
+import matplotlib as plt
 
 audio_path = "AudioCaptchas/"
 num_classes = 10
@@ -48,3 +48,11 @@ model.add(Dense(num_classes, activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 history = model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_test, y_test))
+
+plt.plot(history.history['accuracy'], marker = 'o')
+plt.plot(history.history['val_accuracy'], marker = 'o')
+plt.title('Model Accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc = 'lower right')
+plt.show()
