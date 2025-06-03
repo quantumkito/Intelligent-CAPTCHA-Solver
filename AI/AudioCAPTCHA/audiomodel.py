@@ -2,6 +2,8 @@ import os
 import librosa
 import numpy as np
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, LSTM
 
 audio_path = "AudioCaptchas/"
 num_classes = 10
@@ -32,3 +34,6 @@ X = np.array([x[:max_len] for x in X])
 X = (X - np.mean(X)) / np.std(X)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = Sequential()
+model.add(LSTM(128, return_sequences=True, input_shape=(max_len, num_mfcc)))
