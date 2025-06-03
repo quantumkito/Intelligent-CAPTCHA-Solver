@@ -4,6 +4,9 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.layers import Dropout
+
 
 audio_path = "AudioCaptchas/"
 num_classes = 10
@@ -37,3 +40,9 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 model = Sequential()
 model.add(LSTM(128, return_sequences=True, input_shape=(max_len, num_mfcc)))
+model.add(LSTM(64))
+
+model.add(Dropout(0.3))
+model.add(Dense(num_classes, activation='softmax'))
+
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
